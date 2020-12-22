@@ -15,6 +15,7 @@ pathlib = "^1.0.1"
 python = "^3.6.1"
 plotly = "^4.14.1"
 pandas = "^1.1.5"
+humanfriendly = "^9.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.8.2"

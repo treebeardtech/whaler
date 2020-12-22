@@ -5,18 +5,14 @@ from typing import List
 import pandas as pd
 import plotly.express as px
 import plotly.offline
+from humanfriendly import format_size
 
-
-@dataclass
-class Node:
-    path: Path
-    size: int
+from .node import Node
 
 
 @dataclass
 class Report:
     nodes: List[Node]
-    out: Path
 
     @classmethod
     def create_treemap_node(cls, node: Node):
@@ -25,11 +21,11 @@ class Report:
             "name": node.path.name,
             "parent": str(node.path.parent),
             "size": node.size,
-            "desc": f"{str(node.path.as_posix())} ({node.size} MB)",
+            "desc": f"{str(node.path.as_posix())} ({format_size(node.size * 1000)})",
             "type": node.path.suffix,
         }
 
-    def create(self):
+    def create(self, out: Path):
         df = pd.DataFrame([Report.create_treemap_node(nn) for nn in self.nodes])
 
         fig = px.treemap(
@@ -40,7 +36,8 @@ class Report:
             parents="parent",
             values="size",
             color="type",
+            # maxdepth=6
         )
-        filename = str(self.out.absolute())
+        filename = str(out.absolute())
         plotly.offline.plot(fig, filename=filename, auto_open=False)
         print(f"Saved file://{filename}")

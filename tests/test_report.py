@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from whaler.report import Node, Report
+from whaler.node import Node
+from whaler.report import Report
 
 pytest_plugins = "pytester"
 
@@ -15,5 +16,5 @@ class TestNotebookRun:
             Node(Path("venv/lib/f.txt"), 2),
             Node(Path("venv/lib/e.dist-info"), 3),
         ]
-        r = Report(nodes, Path("rep.html"))
-        r.create()
+        r = Report(nodes)
+        r.create(Path("rep.html"))
