@@ -1,0 +1,16 @@
+{
+  "include": ["src", "tests"],
+
+  "typeCheckingMode": "strict",
+  "reportUnusedImport": true,
+  "pythonVersion": "3.7",
+  "typeshedPath": "typeshed",
+  "enableTypeIgnoreComments": true,
+  "reportUnknownMemberType": "warning",
+  "reportUnknownParameterType": "warning",
+  "reportUnknownVariableType": "warning",
+  "reportUnknownArgumentType": "warning",
+  "reportPrivateUsage": "warning",
+  "reportUntypedFunctionDecorator": "warning",
+  "reportMissingTypeStubs": false
+}

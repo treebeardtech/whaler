@@ -1,0 +1,59 @@
+name: Pytest
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  pytest:
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - os: ubuntu-latest
+            python-version: "3.6"
+          - os: ubuntu-latest
+            python-version: "3.7"
+          - os: ubuntu-latest
+            python-version: "3.8"
+          - os: ubuntu-latest
+            python-version: "3.9"
+          - os: macos-latest
+            python-version: "3.6"
+          - os: macos-latest
+            python-version: "3.7"
+          - os: macos-latest
+            python-version: "3.8"
+          - os: macos-latest
+            python-version: "3.9"
+            publish-docs: true
+
+    runs-on: ${{ matrix.cfg.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.cfg.python-version }}
+      - run: pip install poetry
+      - run: poetry install
+      - uses: pre-commit/action@v2.0.0
+        with:
+          extra_args: --verbose --all-files
+
+      - run: poetry run pytest --cov-report=xml --cov=src
+
+      - run: poetry run python -m ipykernel install --user --name whaler
+      - run: poetry run jb build -W -n --keep-going --builder html docs
+
+      - uses: codecov/codecov-action@v1
+        with:
+          file: coverage.xml
+
+      - name: GitHub Pages action
+        if: github.ref == 'refs/heads/main' && matrix.cfg.publish-docs
+        uses: peaceiris/actions-gh-pages@v3.6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html
+
