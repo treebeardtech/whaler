@@ -1,14 +1,19 @@
 import shutil
+import subprocess
 from pathlib import Path
-from subprocess import check_output
+from subprocess import STDOUT
 from typing import Optional, Tuple, Union
+
+from rich.console import Console
+
+console = Console()
 
 import click
 from rich import print
 
 DEFAULT_OUT = "_whaler"
 HTML_DIR = "html"
-DU_FILENAME = "du.tsv"
+DU_FILENAME = "du.txt"
 DU_ARGS = ("-a", "-k")
 UI_FILENAME = "html.zip"
 
@@ -26,6 +31,7 @@ def run(directory: str, out: str, image: Optional[str], server: bool):
     """"""
 
     du_out = shell(get_du_cmd(Path(directory), image))
+
     out_path = Path(out)
     html_path = out_path / HTML_DIR
     html_path.mkdir(exist_ok=True, parents=True)
@@ -36,9 +42,11 @@ def run(directory: str, out: str, image: Optional[str], server: bool):
     shutil.unpack_archive(ui, extract_dir=out_path)
 
     if server:
-        server_cmd = "python3", "-mhttp.server", "8000", f"--directory={html_path}"
+        server_cmd = "python3", "-m", "http.server", "8000", f"--directory={html_path}"
+        print(
+            "[bold green]Done. Serving output at http://localhost:8000 (ctrl+c to exit)"
+        )
         shell(server_cmd)
-        check_output(server_cmd)
 
 
 def get_du_cmd(directory: Path, image: Optional[str]) -> Tuple[str, ...]:
@@ -49,12 +57,14 @@ def get_du_cmd(directory: Path, image: Optional[str]) -> Tuple[str, ...]:
 
 
 def shell(cmd: Union[str, Tuple[str, ...]]):
-    if isinstance(cmd, str):
-        print(f"Running {cmd}")
-        return check_output(cmd, shell=True).decode()
-    else:
-        print(f"Running {' '.join(cmd)}")
-        return check_output(cmd).decode()
+    with console.status(""):
+
+        if isinstance(cmd, str):
+            print(f"Running {cmd}")
+            return subprocess.check_output(cmd, shell=True, stderr=STDOUT).decode()
+        else:
+            print(f"Running {' '.join(cmd)}")
+            return subprocess.check_output(cmd, stderr=STDOUT).decode()
 
 
 if __name__ == "__main__":
