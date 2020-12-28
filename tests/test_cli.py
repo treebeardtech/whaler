@@ -1,6 +1,7 @@
 from subprocess import CalledProcessError, check_output
 from unittest.mock import patch
 
+import pandas as pd
 from click.testing import CliRunner
 from pytest import fixture
 
@@ -55,6 +56,23 @@ def test_when_custom_out_dir_then_success(testdir):
     assert result.exit_code == 0
     assert (html_dir / cli.DU_FILENAME).exists()
     assert (html_dir / "index.html").exists()
+
+
+def test_when_custom_dir_docker_then_custom_cwd(testdir, alpine):
+    runner = CliRunner()
+    result = runner.invoke(
+        cli.run, f"--image={alpine} --no-server /bin", catch_exceptions=False
+    )
+
+    html_dir = Path(testdir.tmpdir) / cli.DEFAULT_OUT / cli.HTML_DIR
+
+    assert result.exit_code == 0
+    du_txt_path = html_dir / cli.DU_FILENAME
+    assert (du_txt_path).exists()
+    assert (html_dir / "index.html").exists()
+
+    df = pd.read_csv(du_txt_path, sep="\t", names=["size", "path"])
+    assert len(df.loc[df["path"] == "./ls"]) == 1
 
 
 def test_when_docker_dir_then_success(testdir, alpine):
