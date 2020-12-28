@@ -8,9 +8,10 @@ from pathlib import Path
 
 def test_when_local_dir_then_success(testdir):
     runner = CliRunner()
-    result = runner.invoke(cli.run)
-    out_dir = Path(testdir.tmpdir) / cli.DEFAULT_OUT
+    result = runner.invoke(cli.run, "--no-server", catch_exceptions=False)
+
+    html_dir = Path(testdir.tmpdir) / cli.DEFAULT_OUT / cli.HTML_DIR
 
     assert result.exit_code == 0
-    assert out_dir.exists()
-    assert (out_dir / cli.DU_FILENAME).exists()
+    assert (html_dir / cli.DU_FILENAME).exists()
+    assert (html_dir / "index.html").exists()

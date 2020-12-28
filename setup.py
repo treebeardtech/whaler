@@ -8,7 +8,7 @@ packages = \
 ['whaler']
 
 package_data = \
-{'': ['*']}
+{'': ['*'], 'whaler': ['static/*']}
 
 install_requires = \
 ['click>=7.1.2,<8.0.0',

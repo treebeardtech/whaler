@@ -7,6 +7,7 @@ name = "whaler"
 packages = [
   {include = "whaler", from = "src"},
 ]
+include = ["ui.zip"]
 readme = "README.md"
 version = "0.1"
 
