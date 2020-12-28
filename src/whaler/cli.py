@@ -1,7 +1,7 @@
 import shutil
 from pathlib import Path
 from subprocess import check_output
-from typing import Optional
+from typing import Optional, Tuple, Union
 
 import click
 from rich import print
@@ -9,6 +9,7 @@ from rich import print
 DEFAULT_OUT = "_whaler"
 HTML_DIR = "html"
 DU_FILENAME = "du.tsv"
+DU_ARGS = ("-a", "-k")
 UI_FILENAME = "html.zip"
 
 
@@ -23,9 +24,8 @@ UI_FILENAME = "html.zip"
 )
 def run(directory: str, out: str, image: Optional[str], server: bool):
     """"""
-    cmd = ["du", "-a", "-k", directory]
-    print(f"Running {' '.join(cmd)}")
-    du_out = check_output(cmd).decode()
+
+    du_out = shell(get_du_cmd(Path(directory), image))
     out_path = Path(out)
     html_path = out_path / HTML_DIR
     html_path.mkdir(exist_ok=True, parents=True)
@@ -36,9 +36,25 @@ def run(directory: str, out: str, image: Optional[str], server: bool):
     shutil.unpack_archive(ui, extract_dir=out_path)
 
     if server:
-        server_cmd = ["python3", "-m", "http.server", "8000"]
-        print(f"Running {' '.join(server_cmd)}")
-        check_output(server_cmd, cwd=str(html_path))
+        server_cmd = "python3", "-mhttp.server", "8000", f"--directory={html_path}"
+        shell(server_cmd)
+        check_output(server_cmd)
+
+
+def get_du_cmd(directory: Path, image: Optional[str]) -> Tuple[str, ...]:
+    if image:
+        return "docker", "run", "--rm", "--entrypoint", "du", image
+    else:
+        return ("du",) + DU_ARGS + (str(directory),)
+
+
+def shell(cmd: Union[str, Tuple[str, ...]]):
+    if isinstance(cmd, str):
+        print(f"Running {cmd}")
+        return check_output(cmd, shell=True).decode()
+    else:
+        print(f"Running {' '.join(cmd)}")
+        return check_output(cmd).decode()
 
 
 if __name__ == "__main__":
