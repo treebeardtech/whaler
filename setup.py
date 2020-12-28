@@ -13,9 +13,7 @@ package_data = \
 install_requires = \
 ['click>=7.1.2,<8.0.0',
  'humanfriendly>=9.1,<10.0',
- 'pandas>=1.1.5,<2.0.0',
  'pathlib>=1.0.1,<2.0.0',
- 'plotly>=4.14.1,<5.0.0',
  'rich>=9.5.1,<10.0.0']
 
 entry_points = \
