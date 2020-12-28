@@ -77,7 +77,7 @@ def test_when_custom_dir_docker_then_custom_cwd(testdir, alpine):
 
 def test_when_docker_dir_then_success(testdir, alpine):
     runner = CliRunner()
-    directory = "usr"
+    directory = "/usr"
     result = runner.invoke(
         cli.run, f"--image={alpine} --no-server {directory}", catch_exceptions=False
     )
@@ -91,7 +91,7 @@ def test_when_docker_dir_then_success(testdir, alpine):
 
 def test_when_subprocess_error_then_appropriate_msg(testdir):
     runner = CliRunner()
-    stdout = "hfgh546"
+    stdout = ""
     stderr = "fhgf3"
     cmd = "hjgh 8787"
 
@@ -140,3 +140,22 @@ def test_when_no_du_then_fails(testdir, distroless):
     assert result.exit_code == 2
     assert not (Path(testdir.tmpdir) / cli.DEFAULT_OUT).exists()
     assert "executable file not found" in result.output
+
+
+def test_when_large_image_then_success(testdir):
+    runner = CliRunner()
+    result = runner.invoke(
+        cli.run,
+        f"--image='volkamerlab/teachopencadd:master-latest' --no-server /",
+        catch_exceptions=False,
+    )
+
+    html_dir = Path(testdir.tmpdir) / cli.DEFAULT_OUT / cli.HTML_DIR
+
+    assert result.exit_code == 0
+    du_txt_path = html_dir / cli.DU_FILENAME
+    assert (du_txt_path).exists()
+    assert (html_dir / "index.html").exists()
+
+    df = pd.read_csv(du_txt_path, sep="\t", names=["size", "path"])
+    assert len(df.loc[df["path"] == "./bin/ls"]) == 1

@@ -1,7 +1,7 @@
 import shutil
 import subprocess
 from pathlib import Path
-from subprocess import STDOUT, CalledProcessError
+from subprocess import CalledProcessError
 from typing import Optional, Tuple, Union
 
 from rich.console import Console
@@ -31,7 +31,7 @@ UI_FILENAME = "html.zip"
 def run(directory: str, out: str, image: Optional[str], server: bool, port: int):
     """"""
     try:
-        du_out = shell(get_du_cmd(Path(directory), image))
+        du_out = du(Path(directory), image)
 
         out_path = Path(out)
         html_path = out_path / HTML_DIR
@@ -54,36 +54,50 @@ def run(directory: str, out: str, image: Optional[str], server: bool, port: int)
                 f"[bold green]Done. Serving output at http://localhost:{port} (ctrl+c to exit)"
             )
             shell(server_cmd)
-    except ShellError as se:
-        print(se.args[0])
+    except CalledProcessError as err:
+        msg = f"""
+[bold red]subprocess failed with status {err.returncode}.
+stderr:\n\n{(err.stderr or b'-').decode()}
+stdout (truncated):\n\n{(err.stdout or b'-').decode()[:100]}
+"""
+        print(msg)
+
         exit(2)
 
 
-def get_du_cmd(directory: Path, image: Optional[str]) -> Tuple[str, ...]:
+def du(directory: Path, image: Optional[str]) -> str:
+
     if image:
-        return "docker", "run", "--rm", "--entrypoint=du", "--pull=never", image
+        cmd = ("docker", "run", "--rm", "--entrypoint=du", "--pull=never")
+        if str(directory) != ".":
+            cmd += (f"--workdir={directory}",)
+        cmd += (image, *DU_ARGS)
     else:
-        return ("du",) + DU_ARGS + (str(directory),)
+        cmd = ("bash", "-c", f"cd {directory} && du {' '.join(DU_ARGS)}")
+
+    try:
+        return shell(cmd)
+    except CalledProcessError as err:
+        if len(err.output) == 0:
+            raise err
+
+        print(
+            f"Ignoring what seems to be non-fatal error(s):\n{(err.stderr or b'-').decode()}"
+        )
+        return err.output.decode()
 
 
 def shell(cmd: Union[str, Tuple[str, ...]]):
-    try:
-        with console.status(""):
+    with console.status(""):
 
-            if isinstance(cmd, str):
-                print(f"Running {cmd}")
-                return subprocess.check_output(cmd, shell=True, stderr=STDOUT).decode()
-            else:
-                print(f"Running {' '.join(cmd)}")
-                return subprocess.check_output(cmd, stderr=STDOUT).decode()
-    except CalledProcessError as err:
-        raise ShellError(
-            f"""
-[bold red]subprocess failed with status {err.returncode}.
-stdout: {(err.stdout or b'-').decode()}
-stderr: {(err.stderr or b'-').decode()}
-"""
-        )
+        if isinstance(cmd, str):
+            print(f"Running {cmd}")
+            return subprocess.check_output(
+                cmd, shell=True, stderr=subprocess.PIPE
+            ).decode()
+        else:
+            print(f"Running {' '.join(cmd)}")
+            return subprocess.check_output(cmd, stderr=subprocess.PIPE).decode()
 
 
 class ShellError(BaseException):
