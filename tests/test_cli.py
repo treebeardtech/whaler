@@ -11,13 +11,23 @@ pytest_plugins = "pytester"
 from pathlib import Path
 
 
-@fixture
-def testimage():
-    print("Pulling image...")
-
-    image = "alpine:20201218"
+def pull(image: str):
+    print(f"Pulling {image}...")
     check_output(["docker", "pull", image])
     print("Done.")
+
+
+@fixture
+def alpine():
+    image = "alpine:20201218"
+    pull(image)
+    return image
+
+
+@fixture
+def distroless():
+    image = "gcr.io/distroless/python3"
+    pull(image)
     return image
 
 
@@ -47,11 +57,11 @@ def test_when_custom_out_dir_then_success(testdir):
     assert (html_dir / "index.html").exists()
 
 
-def test_when_docker_dir_then_success(testdir, testimage):
+def test_when_docker_dir_then_success(testdir, alpine):
     runner = CliRunner()
     directory = "usr"
     result = runner.invoke(
-        cli.run, f"--image={testimage} --no-server {directory}", catch_exceptions=False
+        cli.run, f"--image={alpine} --no-server {directory}", catch_exceptions=False
     )
 
     html_dir = Path(testdir.tmpdir) / cli.DEFAULT_OUT / cli.HTML_DIR
@@ -102,3 +112,13 @@ def test_when_invalid_dir_then_fails(testdir):
 
     assert result.exit_code == 2
     assert not (Path(testdir.tmpdir) / cli.DEFAULT_OUT).exists()
+
+
+def test_when_no_du_then_fails(testdir, distroless):
+    runner = CliRunner()
+
+    result = runner.invoke(cli.run, f"--image='{distroless}' --no-server")
+
+    assert result.exit_code == 2
+    assert not (Path(testdir.tmpdir) / cli.DEFAULT_OUT).exists()
+    assert "executable file not found" in result.output

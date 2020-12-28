@@ -20,6 +20,7 @@ UI_FILENAME = "html.zip"
 
 @click.command()
 @click.option("--image", help="docker image", default=None)
+@click.option("--port", help="port to serve the outputs on", default=8000)
 @click.option("--out", help="output path", default=DEFAULT_OUT)
 @click.argument("directory", default=".")
 @click.option(
@@ -27,7 +28,7 @@ UI_FILENAME = "html.zip"
     default=True,
     help="Run web server on output to immediately view",
 )
-def run(directory: str, out: str, image: Optional[str], server: bool):
+def run(directory: str, out: str, image: Optional[str], server: bool, port: int):
     """"""
     try:
         du_out = shell(get_du_cmd(Path(directory), image))
@@ -46,11 +47,11 @@ def run(directory: str, out: str, image: Optional[str], server: bool):
                 "python3",
                 "-m",
                 "http.server",
-                "8000",
+                str(port),
                 f"--directory={html_path}",
             )
             print(
-                "[bold green]Done. Serving output at http://localhost:8000 (ctrl+c to exit)"
+                f"[bold green]Done. Serving output at http://localhost:{port} (ctrl+c to exit)"
             )
             shell(server_cmd)
     except ShellError as se:
