@@ -15,7 +15,7 @@ DEFAULT_OUT = "_whaler"
 HTML_DIR = "html"
 DU_FILENAME = "du.txt"
 DU_ARGS = ("-a", "-k")
-UI_FILENAME = "html.zip"
+UI_FILENAME = "html.tgz"
 
 
 @click.command()
