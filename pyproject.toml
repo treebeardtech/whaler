@@ -1,0 +1,31 @@
+[tool.poetry]
+authors = ["alex-treebeard <alex@treebeard.io>"]
+description = ""
+homepage = "https://github.com/treebeardtech/whaler"
+license = "Apache-2.0"
+name = "whaler"
+packages = [
+  {include = "whaler", from = "src"},
+]
+include = ["ui.zip"]
+readme = "README.md"
+version = "0.0.1"
+
+[tool.poetry.scripts]
+whaler = 'whaler.cli:run'
+
+[tool.poetry.dependencies]
+pathlib = "^1.0.1"
+python = "^3.7.1"
+humanfriendly = "^9.1"
+click = "^7.1.2"
+rich = "^9.5.1"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^2.8.2"
+pytest = "^6.2.1"
+pandas = "^1.2.0"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["setuptools", "poetry-core>=1.0.0"]
