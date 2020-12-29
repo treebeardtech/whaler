@@ -19,13 +19,13 @@ jobs:
             python-version: "3.9"
           - os: macos-latest
             python-version: "3.7"
-            pytest-opts: -m 'not docker'
+            pytest-opts: "-m 'not docker'"
           - os: macos-latest
             python-version: "3.8"
-            pytest-opts: -m 'not docker'
+            pytest-opts: "-m 'not docker'"
           - os: macos-latest
             python-version: "3.9"
-            pytest-opts: -m 'not docker'
+            pytest-opts: "-m 'not docker'"
 
     runs-on: ${{ matrix.cfg.os }}
     steps:
