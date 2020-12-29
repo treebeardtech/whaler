@@ -11,19 +11,20 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          # - os: ubuntu-latest
-          #   python-version: "3.7"
-          # - os: ubuntu-latest
-          #   python-version: "3.8"
+          - os: ubuntu-latest
+            python-version: "3.7"
+          - os: ubuntu-latest
+            python-version: "3.8"
           - os: ubuntu-latest
             python-version: "3.9"
-          # - os: macos-latest
-          #   python-version: "3.7"
-          # - os: macos-latest
-          #   python-version: "3.8"
+          - os: macos-latest
+            python-version: "3.7"
+            pytest-opts: -m 'not docker'
+          - os: macos-latest
+            python-version: "3.8"
+            pytest-opts: -m 'not docker'
           - os: macos-latest
             python-version: "3.9"
-            publish-docs: true
             pytest-opts: -m 'not docker'
 
     runs-on: ${{ matrix.cfg.os }}
