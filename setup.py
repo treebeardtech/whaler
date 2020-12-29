@@ -23,7 +23,7 @@ setup_kwargs = {
     'name': 'whaler',
     'version': '0.0.1',
     'description': '',
-    'long_description': '# whaler\n\nA visual disk usage analyser for making docker images smaller',
+    'long_description': '# whaler\n\nA visual disk usage analyser for making docker images smaller\n',
     'author': 'alex-treebeard',
     'author_email': 'alex@treebeard.io',
     'maintainer': None,
