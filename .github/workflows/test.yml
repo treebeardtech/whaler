@@ -38,4 +38,4 @@ jobs:
         with:
           extra_args: --verbose --all-files
 
-      - run: poetry run pytest
+      - run: poetry run pytest ${{ matrix.cfg.pytest-opts }}
