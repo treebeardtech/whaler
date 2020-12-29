@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pandas as pd
 from click.testing import CliRunner
-from pytest import fixture
+from pytest import fixture, mark
 
 from whaler import cli
 
@@ -58,6 +58,7 @@ def test_when_custom_out_dir_then_success(testdir):
     assert (html_dir / "index.html").exists()
 
 
+@mark.docker
 def test_when_custom_dir_docker_then_custom_cwd(testdir, alpine):
     runner = CliRunner()
     result = runner.invoke(
@@ -75,6 +76,7 @@ def test_when_custom_dir_docker_then_custom_cwd(testdir, alpine):
     assert len(df.loc[df["path"] == "./ls"]) == 1
 
 
+@mark.docker
 def test_when_docker_dir_then_success(testdir, alpine):
     runner = CliRunner()
     directory = "/usr"
@@ -104,6 +106,7 @@ def test_when_subprocess_error_then_appropriate_msg(testdir):
     assert stderr in result.output
 
 
+@mark.docker
 def test_when_invalid_image_then_fails(testdir):
     runner = CliRunner()
 
@@ -123,6 +126,7 @@ def test_when_invalid_dir_then_fails(testdir):
     assert not (Path(testdir.tmpdir) / cli.DEFAULT_OUT).exists()
 
 
+@mark.docker
 def test_when_no_du_then_fails(testdir, distroless):
     runner = CliRunner()
 
@@ -133,6 +137,8 @@ def test_when_no_du_then_fails(testdir, distroless):
     assert "executable file not found" in result.output
 
 
+@mark.slow
+@mark.docker
 def test_when_large_image_then_success(testdir):
     runner = CliRunner()
     result = runner.invoke(

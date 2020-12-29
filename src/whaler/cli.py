@@ -68,7 +68,7 @@ stdout (truncated):\n\n{(err.stdout or b'-').decode()[:100]}
 def du(directory: Path, image: Optional[str]) -> str:
 
     if image:
-        cmd = ("dockerf", "run", "--rm", "--entrypoint=du")
+        cmd = ("docker", "run", "--rm", "--entrypoint=du")
         if str(directory) != ".":
             cmd += (f"--workdir={directory}",)
         cmd += (image, *DU_ARGS)
