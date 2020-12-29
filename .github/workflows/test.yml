@@ -15,8 +15,8 @@ jobs:
           #   python-version: "3.7"
           # - os: ubuntu-latest
           #   python-version: "3.8"
-          # - os: ubuntu-latest
-          #   python-version: "3.9"
+          - os: ubuntu-latest
+            python-version: "3.9"
           # - os: macos-latest
           #   python-version: "3.7"
           # - os: macos-latest
@@ -28,6 +28,7 @@ jobs:
     runs-on: ${{ matrix.cfg.os }}
     steps:
       - run: docker -v
+      - run: which docker
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
