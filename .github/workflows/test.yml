@@ -27,9 +27,7 @@ jobs:
 
     runs-on: ${{ matrix.cfg.os }}
     steps:
-      - run: which docker || true
-      - uses: docker-practice/actions-setup-docker@v1
-      - run: which docker || true
+      - run: docker -v
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
