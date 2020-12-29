@@ -1,4 +1,3 @@
-name: Publish to PYPI
 on:
   release:
     types: [published]

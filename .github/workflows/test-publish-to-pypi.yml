@@ -1,4 +1,3 @@
-name: Test Publish to PYPI
 on: [pull_request]
 jobs:
   build-n-publish:
