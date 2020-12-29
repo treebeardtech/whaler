@@ -113,15 +113,6 @@ def test_when_invalid_image_then_fails(testdir):
     assert not (Path(testdir.tmpdir) / cli.DEFAULT_OUT).exists()
 
 
-def test_when_image_not_pulled_then_fails(testdir):
-    runner = CliRunner()
-
-    result = runner.invoke(cli.run, "--image cheers --no-server")
-
-    assert result.exit_code == 2
-    assert not (Path(testdir.tmpdir) / cli.DEFAULT_OUT).exists()
-
-
 def test_when_invalid_dir_then_fails(testdir):
     runner = CliRunner()
     invalid_dir = "lkj"
