@@ -26,6 +26,7 @@ jobs:
           - os: macos-latest
             python-version: "3.9"
             pytest-opts: "-m 'not docker'"
+            publish-docs: true
 
     runs-on: ${{ matrix.cfg.os }}
     steps:
@@ -41,3 +42,10 @@ jobs:
           extra_args: --verbose --all-files
 
       - run: poetry run pytest ${{ matrix.cfg.pytest-opts }}
+      - run: poetry run whaler --no-server
+      - if: matrix.cfg.publish-docs
+        uses: peaceiris/actions-gh-pages@v3.6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_whaler/html
+
