@@ -47,11 +47,9 @@ Done. Serving output at http://localhost:8000 (ctrl+c to exit)
 Running python3 -m http.server 8000 --directory=_whaler/html
 ```
 
-Done. Serving output at http://localhost:8000 (ctrl+c to exit)
-Running python3 -m http.server 8000 --directory=_whaler/html
-
 ![HTML Report](docs/screen.png)
 
+Play with a [hosted demo](https://treebeardtech.github.io/whaler/)
 
 ## Limitations
 
