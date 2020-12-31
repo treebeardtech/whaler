@@ -24,7 +24,7 @@ repos:
         entry: |
           bash -c ' \
             V=$(poetry version -s);
-            poetry build && tar -xvf dist/whaler-$V.tar.gz -C dist && diff dist/whaler-$V/setup.py setup.py \
+            $CI || poetry build && tar -xvf dist/whaler-$V.tar.gz -C dist && diff dist/whaler-$V/setup.py setup.py \
               || cp dist/whaler-$V/setup.py setup.py \
           '
         language: system
