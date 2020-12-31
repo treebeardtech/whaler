@@ -23,8 +23,11 @@ repos:
         name: sync setup.py with poetry
         entry: |
           bash -c ' \
+            if [[ $CI ]]; then
+              exit 0
+            fi
             V=$(poetry version -s);
-            $CI || poetry build && tar -xvf dist/whaler-$V.tar.gz -C dist && diff dist/whaler-$V/setup.py setup.py \
+            poetry build && tar -xvf dist/whaler-$V.tar.gz -C dist && diff dist/whaler-$V/setup.py setup.py \
               || cp dist/whaler-$V/setup.py setup.py \
           '
         language: system
