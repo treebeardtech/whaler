@@ -42,8 +42,8 @@ jobs:
           extra_args: --verbose --all-files
 
       - run: poetry run pytest ${{ matrix.cfg.pytest-opts }}
-      - run: poetry run whaler --no-server
-      - if: matrix.cfg.publish-docs
+      - run: poetry run whaler --no-server /
+      - if: matrix.cfg.publish-docs && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3.6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
