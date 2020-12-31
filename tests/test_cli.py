@@ -64,6 +64,7 @@ def test_when_custom_dir_docker_then_custom_cwd(testdir, alpine):
     result = runner.invoke(
         cli.run, f"--image={alpine} --no-server /bin", catch_exceptions=False
     )
+    print(result.output)
 
     html_dir = Path(testdir.tmpdir) / cli.DEFAULT_OUT / cli.HTML_DIR
 
@@ -146,6 +147,7 @@ def test_when_large_image_then_success(testdir):
         f"--image='volkamerlab/teachopencadd:master-latest' --no-server /",
         catch_exceptions=False,
     )
+    print(result.output)
 
     html_dir = Path(testdir.tmpdir) / cli.DEFAULT_OUT / cli.HTML_DIR
 
