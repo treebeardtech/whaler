@@ -61,6 +61,10 @@ Play with a [hosted demo](https://treebeardtech.github.io/whaler/)
 1. Whaler can tell you what is taking up space in the final layer of your Docker image, but you may have intermediate layers which are contributing to the image size. For diving through the layers, use [dive](https://github.com/wagoodman/dive)
     * **Related**: read up on [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/) to understand how to mitigate the problem of intermediate layers bloating your image.
 1. For investigating disk usage in non-docker directories, [Disk Inventory X](http://www.derlien.com/) is a great tool on OS X which I have based whaler on.
+1. [GoogleContainerTools/distroless](https://github.com/GoogleContainerTools/distroless) for base images not containing standard linux distro contents
+
+## See also
+1. [a good blog post on making small python images](https://pythonspeed.com/articles/alpine-docker-python/)
 
 ## Developing
 
