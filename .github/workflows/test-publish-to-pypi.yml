@@ -11,6 +11,8 @@ jobs:
           build_version="$(poetry version -s).dev$(date +%s)"
           poetry version $build_version
       - run: poetry build
+      - run: pip install "dist/whaler-$(poetry version -s).tar.gz"
+      - run: whaler --no-server .
       - name: Publish distribution to Test PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
