@@ -1,7 +1,6 @@
 # whaler
 
 [![PyPI versions](https://img.shields.io/pypi/pyversions/whaler?logo=python&logoColor=white)](https://pypi.org/project/whaler)
-[![PyPI versions](https://img.shields.io/pypi/v/whaler?logo=python&logoColor=white)](https://pypi.org/project/whaler) [![Slack](https://img.shields.io/static/v1?label=slack&message=join&color=green&logo=slack)](https://treebeard.io/slack) [![Twitter](https://img.shields.io/static/v1?label=twitter&message=follow&color=blue&logo=twitter)](https://twitter.com/treebeardtech)
 
 **What?** A command-line tool for visually investigating the disk usage of docker images
 
